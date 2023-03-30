@@ -93,5 +93,45 @@ namespace SqlClient
             }
             return videogames;
         }
+
+        public void AddVideoGame(string name , string overview , DateTime releaseDate , long softwareHouseId)
+        {
+            using var conn = new SqlConnection(connStr);
+
+            try
+            {
+                conn.Open();
+                using var tran = conn.BeginTransaction();
+                try
+                {
+                    var query = "INSERT INTO videogames (name , overview , release_date , software_house_id)"
+                        + " VALUES (@Name, @Overview, @Releasedate, @Softwarehouseid)";
+
+                    var cmd = new SqlCommand(query, conn , tran);
+                    cmd.Parameters.AddWithValue ("@Name", name );
+                    cmd.Parameters.AddWithValue("@Overview", overview );
+                    cmd.Parameters.AddWithValue("@Releasedate", releaseDate);
+                    cmd.Parameters.AddWithValue("@Softwarehouseid", softwareHouseId);
+
+                    cmd.ExecuteNonQuery();
+
+
+
+                    Console.WriteLine("Commit");
+                    tran.Commit();
+
+                }
+                catch
+                {
+                    Console.WriteLine("RollBack");
+                    tran.Rollback();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
