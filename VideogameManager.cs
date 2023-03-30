@@ -108,7 +108,7 @@ namespace SqlClient
                         + " VALUES (@Name, @Overview, @Releasedate, @Softwarehouseid)";
 
                     var cmd = new SqlCommand(query, conn , tran);
-                    cmd.Parameters.AddWithValue ("@Name", name );
+                    cmd.Parameters.AddWithValue("@Name", name );
                     cmd.Parameters.AddWithValue("@Overview", overview );
                     cmd.Parameters.AddWithValue("@Releasedate", releaseDate);
                     cmd.Parameters.AddWithValue("@Softwarehouseid", softwareHouseId);
@@ -129,6 +129,27 @@ namespace SqlClient
 
             }
             catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void DeleteVideoGame(long gameId)
+        {
+            using var conn = new SqlConnection( connStr);
+            try
+            {
+                conn.Open();
+
+                var query = "DELETE"
+                    + " FROM videogames"
+                    + $" WHERE id = @gameID";
+                using var cmd = new SqlCommand(query, conn); 
+                cmd.Parameters.AddWithValue("@gameID" , gameId );
+                cmd.ExecuteNonQuery();
+
+            }
+            catch(Exception ex) 
             {
                 Console.WriteLine(ex.Message);
             }
